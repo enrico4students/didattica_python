@@ -10,6 +10,6 @@ for i in range(nr_elementi):
     valore = random()*100
     valore = int(valore)
     print("genero {}-esimo elemento, e' {}".format(i, valore))
-    vettore.append(valore)
+    vettore.append(valore)    
 
 print(vettore)
