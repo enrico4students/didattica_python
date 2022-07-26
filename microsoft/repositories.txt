@@ -1,5 +1,0 @@
-https://github.com/microsoft/c9-python-getting-started.git
-git@github.com:microsoft/c9-python-getting-started.git
-causa filename troppo lunghi sorgenti in
-D:\data\enrico_data\08_dev\dev_sources\c9-python-getting-started
-
