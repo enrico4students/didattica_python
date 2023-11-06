@@ -56,6 +56,11 @@ Es. 1:
 
 # funzione che ritorna anaDict; NON rinominatela
 def ex1(inputList):
+  """ potrebbe intendere se le altre parole nella lista sono anaagrammi, non tutti gli anagrammi possibil,
+  in tal caso due approcci:
+  - controllare, per tutti gli anagrammi generati se è in lista (DISPENDIOSO)
+  - per ogni parola costruire un dizionario con chiave lettera e valore occorrenze e se dizionari uguali le parole sono anagrammi
+  """
   anaDict = {}
   for stringa in inputList:
       anagrammi = set()
@@ -87,6 +92,7 @@ Es. 2:
 
 # funzione che ritorna subDict; NON rinominatela
 def ex2(inputList):
+""" potrebbe intendere se le altre parole nella lista sono sottostringhe, non tutte le sottostringhe possibil,
   
   subDict = {}
   for stringa in inputList:
