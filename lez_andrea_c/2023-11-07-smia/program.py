@@ -54,13 +54,20 @@ Esercizi:
 Es. 1: 
 """ 
 
+# relative a ipotesi abbastanza contorte per spiegare l'appparente non correttezza
+# delle soluzioni proposte come corrette trovate nel sorgete
+limita_a_lista_input = True # funzionalita' iniziata ma non implementata completamente (solo es. 1)
+escludi_se_soluzione = True # funzionalita' non implementata
+
+
 # funzione che ritorna anaDict; NON rinominatela
 def ex1(inputList):
-  """ potrebbe intendere se le altre parole nella lista sono anaagrammi, non tutti gli anagrammi possibil,
-  in tal caso due approcci:
-  - controllare, per tutti gli anagrammi generati se è in lista (DISPENDIOSO)
-  - per ogni parola costruire un dizionario con chiave lettera e valore occorrenze e se dizionari uguali le parole sono anagrammi
-  """
+
+  global limita_a_lista_input
+  global escludi_se_soluzione 
+
+  soluzioni = set()
+
   anaDict = {}
   for stringa in inputList:
       anagrammi = set()
@@ -68,10 +75,18 @@ def ex1(inputList):
       for first in range(len(stringa_l)):
           for second in range(first+1,len(stringa_l)):
               anagramma_corr = stringa_l.copy()
+              
+              # scambio caratteri
               temp = anagramma_corr[first]
               anagramma_corr[first] = anagramma_corr[second]
               anagramma_corr[second] = temp
-              anagramma_corr = "".join(anagramma_corr)
+              
+              anagramma_corr = "".join(anagramma_corr) # trasforma lista in stringa
+              if limita_a_lista_input:
+                 if anagramma_corr not in inputList:
+                    print(f"limitazione a lista input attiva, ignoro {anagramma_corr}")
+                    continue
+              
               print(f"scambio {first} {second}\n{stringa}\n{anagramma_corr}")
               if anagramma_corr not in anagrammi:
                 anagrammi.add(anagramma_corr)
@@ -92,12 +107,12 @@ Es. 2:
 
 # funzione che ritorna subDict; NON rinominatela
 def ex2(inputList):
-  """ potrebbe intendere se le altre parole nella lista sono sottostringhe, non tutte le sottostringhe possibili
-  """
+  
+  MIN_SUBSTRING_LEN = 2
   subDict = {}
   for stringa in inputList:
     sottostringhe = set()
-    for len_substr in range(2, len(stringa)):
+    for len_substr in range(MIN_SUBSTRING_LEN, len(stringa)):
       for start in range(0,len(stringa)-len_substr+1):
           cur_substr = stringa[start:start+len_substr]
           print(f"len substr: {len_substr} start: {start} substr: {cur_substr}")
