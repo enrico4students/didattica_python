@@ -92,8 +92,8 @@ Es. 2:
 
 # funzione che ritorna subDict; NON rinominatela
 def ex2(inputList):
-""" potrebbe intendere se le altre parole nella lista sono sottostringhe, non tutte le sottostringhe possibil,
-  
+  """ potrebbe intendere se le altre parole nella lista sono sottostringhe, non tutte le sottostringhe possibili
+  """
   subDict = {}
   for stringa in inputList:
     sottostringhe = set()
@@ -131,6 +131,6 @@ def ex3(inputList):
 
 
 if __name__ == "__main__":
-    print(ex1(["enrico"]))
-    print(ex2(["enrico"]))
-    print(ex3(["aba", "ert", "bab", "carlo"]))
+    # print(ex1(["enrico"]))
+    # print(ex2(["enrico"]))
+    # print(ex3(["aba", "ert", "bab", "carlo"]))
