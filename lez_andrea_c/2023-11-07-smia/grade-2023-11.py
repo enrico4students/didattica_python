@@ -6,7 +6,7 @@ import sys
 import filecmp
 
 # if not os.path.isfile('program.py'): # questo non funziona se la working directory cambia, come accade nel mio caso 
-program_pathname = os.path.join("2023-11-07-smia","program.py")
+program_pathname = os.path.join("lez_andrea_C","2023-11-07-smia","program.py")
 if not os.path.isfile(program_pathname): # questo non funziona se la working directory cambia, come accade nel mio caso 
     print('WARNING: Save program_smia.py as program.py\n'
           'ATTENZIONE: salvare program_smia.py con nome program.py')
@@ -71,7 +71,7 @@ def eqfiles(f, g):
 def do_ex1_tests(input, expected_out): 
     d = program.ex1(input)
     if d != expected_out:
-        print(f'''{'*'*50}\n[ERROR] Il risultato deve essere {expected_out} anziché {d}.\n{'*'*50}''')
+        print(f'''{'*'*50}\n[ERROR] Il risultato deve essere \n{expected_out} anziché \n{d}.\n{'*'*50}''')
         return 0        # test non passato
     return 1            # test passato (1 punto)
 

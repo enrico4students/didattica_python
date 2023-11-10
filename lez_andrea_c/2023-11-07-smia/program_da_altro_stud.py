@@ -99,10 +99,7 @@ Es. 1:
 
 # funzione che ritorna anaDict; NON rinominatela
 
-def ex1(inputList):
-    # per facilità definiamo prima una funzione che, date due stringhe, ritorna True se sono anagrammi e False in caso contrario
-
-    def is_anagram(string_1, string_2):
+def is_anagram(string_1, string_2):
 
         list_string_2 = [l for l in string_2]
 
@@ -119,7 +116,6 @@ def ex1(inputList):
             except:
 
                 return False
-
         # per essere anagrammi, ogni carattere della string_2 deve appartenere anche alla string_1
 
         # dunque, dopo l'operazione precedente, dovremmo avere una lista vuota
@@ -128,6 +124,12 @@ def ex1(inputList):
             return True
 
         return False
+
+
+def ex1(inputList):
+    # per facilità definiamo prima una funzione che, date due stringhe, ritorna True se sono anagrammi e False in caso contrario
+
+    
 
     # viene richiesto che una stringa già considerata anagramma non ricompaia nel dizionario, ma non viene specificato quale tra gli anagrammi debba essere la key del dizionario
 

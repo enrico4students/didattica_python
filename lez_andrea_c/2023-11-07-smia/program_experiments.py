@@ -12,9 +12,9 @@ import os
     NOME, COGNOME e NUMERO DI MATRICOLA
 """
 
-nome = "NOMEx"
-cognome = "COGNOMEx"
-matricola = "MATRICOLAx"
+nome = "Andrea"
+cognome = "Corrieri"
+matricola = f"????????"
 
 ################################################################################
 ################################################################################
@@ -54,15 +54,8 @@ Esercizi:
 Es. 1: 
 """
 
-# relative a ipotesi abbastanza contorte per spiegare l'appparente non correttezza
-# delle soluzioni proposte come corrette trovate nel sorgete
-limita_a_lista_input = True  # funzionalita' iniziata ma non implementata completamente (solo es. 1)
-escludi_se_soluzione = True  # funzionalita' non implementata
-
-
 def is_anagram_sorting_sbs(s1: str, s2: str):
-    """ controlla se due stringhe sono un'anagramma ordinando i loro caratteri e confrontando il risultato
-    versione didattica, grande "spreco" di variabili non strettamente necessarie
+    """ didattica, "spreco" di variabili
     """
     if len(s1) != len(s2):
         return False
@@ -74,35 +67,77 @@ def is_anagram_sorting_sbs(s1: str, s2: str):
         else:
             return False
 
-
 def is_anagram_sorting(s1: str, s2: str):
-    """ controlla se due stringhe sono un'anagramma ordinando i loro caratteri e confrontando il risultato 
-    versione non didattica
-    """
+    """ controlla se due stringhe sono un'anagramma ordinando i loro caratteri e confrontando il risultato """
     return len(s1) == len(s2) and sorted(s1) == sorted(s2)
 
 
-# funzione che ritorna anaDict; NON rinominatela
-def ex1(inputList):
 
-    inputList = inputList[::-1] # senza questo non passa il test
+# funzione che ritorna anaDict; NON rinominatela
+def ex1_variante1(inputList):
+
+    if True:
+        print("ordino la lista, anche se non richiesto dall'esercizio (ottengo un errore anzichè due)")
+        inputList = sorted(inputList)
 
     anaDict = {}
-
     gia_anagramma = set()
     for i in range(len(inputList)): # per ogni stringa
         if inputList[i] in gia_anagramma:
-            #print(f"'{inputList[i]}' non considerata perchè gia anagramma di altra stringa nella lista "+
+            # print(f"'{inputList[i]}' non considerata perchè gia anagramma di altra stringa nella lista "+
             #      "(NB interpretazione esercizio non sicura, incluso questo punto)")
             continue # non consideriamo se già anagramma
         anagrammi = set()
         for j in range(i+1,len(inputList)):
             if is_anagram_sorting(inputList[i], inputList[j]):
                 anagrammi.add(inputList[j])
-                gia_anagramma.add(inputList[j]) # cosi' verrà ignorata "se una stringa è già stata considerata  come anagramma non viene presentata nel dizionario"
+                gia_anagramma.add(inputList[j]) # cos' verrà ignorata "se una stringa è già stata considerata  come anagramma non viene presentata nel dizionario"
         anaDict[inputList[i]] = (anagrammi, len(anagrammi))
+    
+    anaDict = dict(sorted(anaDict.items(), reverse=True))
 
     return anaDict
+
+
+def ex1_variante2(inputList):
+    """ Qui consideriamo come anagramma l'elemento precedente nella lista, anzichè il secondo
+    come sembrerebbe naturale
+    QUESTO APPROCCIO NON SEMBRA FUNZIONARE, la probabile causa è l'approccio disorganico degli indici
+    """
+
+    anaDict = {}
+    idx_gia_anagramma = set()
+    idx_gia_chiave    = set()   # forse non servira, rimnuovere
+
+    for i in range(len(inputList)): # per ogni stringa        
+        if i in idx_gia_anagramma or i in idx_gia_chiave:
+            continue # non consideriamo se già usata
+            pass
+        for j in range(len(inputList)):
+            # if j in idx_gia_anagramma or j in idx_gia_chiave:
+            if i == j:
+                continue
+            if j in idx_gia_anagramma:
+                # continue # se è chiave non lo consideriamo come anagramma di chiave
+                pass
+            if is_anagram_sorting(inputList[i], inputList[j]):
+                idx_gia_chiave.add(j)
+                idx_gia_anagramma.add(i)
+                if inputList[j] not in anaDict: # crea entry prima volta
+                    anaDict[inputList[j]] = (set(),0)
+                anaDict[inputList[j]][0].add(inputList[i]) # 
+                # tuple invariabili non possiamo aggiornare nr elementi passo passo con: anaDict[inputList[j]][1] += 1
+
+        # alla fine aggiorniamo il nr anagrammi, non potevamo farlo prima perchè tuple read-only
+        for k in anaDict:
+            insieme = anaDict[k][0]
+            anaDict[k] = (insieme, len(insieme))
+
+    return anaDict
+
+
+def ex1(inputList):
+    return ex1_variante2(inputList)
 
 
 # ----------------------------------- Esercizio 2: subDict ----------------------------------- #
@@ -110,8 +145,8 @@ def ex1(inputList):
 Es. 2: 
 """
 
+
 def is_substring_sbs(s1: str, s2:str):
-    """versione didattica"""
     if len(s1) >= len(s2):
         return False
     else:
@@ -123,17 +158,16 @@ def is_substring(s1: str, s2:str):
 # funzione che ritorna subDict; NON rinominatela
 def ex2(inputList):
 
-    subDict = {} # dizionario da ritornare
-    substrings = set() # evitiamo di modificare il set su cui iteriamo rimuovendo da esso le stringhe
-    # che sono sottostringhe, questa è una norma di "prudenza generale da osservare anche quando non vi è rischio di problemi"
-    #  memorizziamo tali stringhe qui per "saltarle" quando le incontriamo
-    
+    subDict = {}
+    substrings = set() # usiamo fino a quando non abbiamo verificato che possiamo modificare il set su cui iteriamo
     input_set1 = sorted(list(set(inputList)), key = len, reverse=True) # ignoriamo stringhe uguali - cominciamo dalle più lunghe
     input_set2 = input_set1.copy() #
 
     for stringa1 in input_set1:
         if stringa1 in substrings:
-            continue # già identificata/catalogata come sottostringa, non la usiamo come chiave/risultato
+            # print(f"'{stringa1}' non considerata perchè sottostringa di altra stringa nella lista "+
+            #       "(NB interpretazione esercizio non sicura, incluso questo punto)")
+            continue #è una sottostringa, non la usiamo come chiave/risultato
         stringa1_substr_set = set()
         for stringa2 in input_set2:
             if is_substring(stringa2, stringa1):
@@ -152,17 +186,15 @@ Es. 3: 10 punti
 
 # funzione che ritorna palDict; NON rinominatela
 def ex3(inputList):
-
     palindrome = set()
     non_palindrome = set()
-    
     for stringa in inputList:
         if stringa == stringa[::-1]:
             palindrome.add(stringa)
         else:
             non_palindrome.add(stringa)
 
-    palDict = {True:  (palindrome,     len(palindrome)),
+    palDict = {True: (palindrome, len(palindrome)),
                False: (non_palindrome, len(non_palindrome))}
     return palDict
 
@@ -174,12 +206,13 @@ if __name__ == "__main__":
     print(f"input list:\n{input_list}")
     print("risultato:\n"+str(ex1(input_list)))
 
-    input_list = ["enrico", "en", "rico", "la","zio", "roma", "ro", "ma", "lazio"]
-    print("\n\n"+"-"*10+" ex2: sottostringhe"+"-"*10)
-    print(f"input list:\n{input_list}")
-    print("risultato:\n"+str(ex2(input_list)))
+    if False:
+        input_list = ["enrico", "en", "rico", "la","zio", "roma", "ro", "ma", "lazio"]
+        print("\n\n"+"-"*10+" ex2: sottostringhe"+"-"*10)
+        print(f"input list:\n{input_list}")
+        print("risultato:\n"+str(ex2(input_list)))
 
-    input_list = ["aba", "ert", "bab", "carlo", "yamamay"]
-    print("\n\n"+"-"*10+" ex3: palindrome"+"-"*10)
-    print(f"input list:\n{input_list}")
-    print(ex3(input_list))
+        input_list = ["aba", "ert", "bab", "carlo", "yamamay"]
+        print("\n\n"+"-"*10+" ex3: palindrome"+"-"*10)
+        print(f"input list:\n{input_list}")
+        print(ex3(input_list))
