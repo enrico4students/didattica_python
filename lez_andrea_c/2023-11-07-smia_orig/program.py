@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
 import os
 
 ################################################################################
@@ -56,8 +57,30 @@ Es. 1:
 
 # funzione che ritorna anaDict; NON rinominatela
 def ex1(inputList):
-    pass
+    
 
+    anaDict = {}
+
+    for stringa in inputList:
+        # print(stringa)
+        # for carattere in stringa:
+        #     print(carattere)
+        anagrammi_di_una_stringa = set()
+        string_as_char_list = list(stringa)
+        for pos_primo in range(len(string_as_char_list)):
+            for pos_secondo in range(pos_primo+1,len(string_as_char_list)):
+                # print(pos_primo, pos_secondo, string_as_char_list[pos_primo], string_as_char_list[pos_secondo])
+                temp = string_as_char_list[pos_primo] # salviamo perchè l'assegnamento seguente lo sovraschiverà
+                string_as_char_list[pos_primo] = string_as_char_list[pos_secondo]
+                string_as_char_list[pos_secondo] = temp
+                anagramma = "".join(string_as_char_list)
+                # print(anagramma)
+                anagrammi_di_una_stringa.add(anagramma)
+        # print(anagrammi_di_una_stringa)
+        tupla2 = (anagrammi_di_una_stringa, len(anagrammi_di_una_stringa)) 
+        anaDict[stringa] = tupla2
+    
+    return anaDict
 
 # ----------------------------------- Esercizio 2: subDict ----------------------------------- #
 """
@@ -78,3 +101,10 @@ Es. 3: 10 punti
 # funzione che ritorna palDict; NON rinominatela
 def ex3(inputList):
     pass
+
+if __name__ == "__main__":
+    lista_parole = ["forza", "Sinner", "sei", "numero 4", "del mondo"]
+    lista_parole = ["01234"]
+    lista_parole = ["enrico", "andrea"]
+    x = ex1(lista_parole)
+    print(x)
