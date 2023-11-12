@@ -1,6 +1,4 @@
-    import sys
+import sys
 
-    for i, arg in enumerate(sys.argv):
-        print(f"{i} {arg}")
-
-
+for i, arg in enumerate(sys.argv):
+    print(f"{i} {arg}")

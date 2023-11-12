@@ -54,30 +54,10 @@ Esercizi:
 Es. 1: 
 """
 
-# relative a ipotesi abbastanza contorte per spiegare l'appparente non correttezza
-# delle soluzioni proposte come corrette trovate nel sorgete
-limita_a_lista_input = True  # funzionalita' iniziata ma non implementata completamente (solo es. 1)
-escludi_se_soluzione = True  # funzionalita' non implementata
-
-
-def is_anagram_sorting_sbs(s1: str, s2: str):
-    """ controlla se due stringhe sono un'anagramma ordinando i loro caratteri e confrontando il risultato
-    versione didattica, grande "spreco" di variabili non strettamente necessarie
-    """
-    if len(s1) != len(s2):
-        return False
-    else:
-        s1_sorted = sorted(s1)
-        s2_sorted = sorted(s2)
-        if s1_sorted == s2_sorted:
-            return True
-        else:
-            return False
 
 
 def is_anagram_sorting(s1: str, s2: str):
     """ controlla se due stringhe sono un'anagramma ordinando i loro caratteri e confrontando il risultato 
-    versione non didattica
     """
     return len(s1) == len(s2) and sorted(s1) == sorted(s2)
 
@@ -85,22 +65,25 @@ def is_anagram_sorting(s1: str, s2: str):
 # funzione che ritorna anaDict; NON rinominatela
 def ex1(inputList):
 
-    inputList = inputList[::-1] # senza questo non passa il test
+    inputList = inputList[::-1] # invertiamo l'ordine della lista, senza questo non passa il test
 
-    anaDict = {}
+    anaDict = {} # dizionario che verrà ritornato
 
-    gia_anagramma = set()
+    anagrammi_da_non_includere = set()
     for i in range(len(inputList)): # per ogni stringa
-        if inputList[i] in gia_anagramma:
+
+        if inputList[i] in anagrammi_da_non_includere:
             #print(f"'{inputList[i]}' non considerata perchè gia anagramma di altra stringa nella lista "+
             #      "(NB interpretazione esercizio non sicura, incluso questo punto)")
             continue # non consideriamo se già anagramma
+
         anagrammi = set()
         for j in range(i+1,len(inputList)):
             if is_anagram_sorting(inputList[i], inputList[j]):
                 anagrammi.add(inputList[j])
-                gia_anagramma.add(inputList[j]) # cosi' verrà ignorata "se una stringa è già stata considerata  come anagramma non viene presentata nel dizionario"
-        anaDict[inputList[i]] = (anagrammi, len(anagrammi))
+                anagrammi_da_non_includere.add(inputList[j]) # 
+
+        anaDict[inputList[i]] = (anagrammi, len(anagrammi)) # associamo alla stringa la coppia <insieme anagrammi> , cardinalità insieme
 
     return anaDict
 
@@ -110,12 +93,6 @@ def ex1(inputList):
 Es. 2: 
 """
 
-def is_substring_sbs(s1: str, s2:str):
-    """versione didattica"""
-    if len(s1) >= len(s2):
-        return False
-    else:
-        return s1 in s2
 
 def is_substring(s1: str, s2:str):
     return len(s1) < len(s2) and s1 in s2
@@ -124,24 +101,31 @@ def is_substring(s1: str, s2:str):
 def ex2(inputList):
 
     subDict = {} # dizionario da ritornare
-    substrings = set() # evitiamo di modificare il set su cui iteriamo rimuovendo da esso le stringhe
-    # che sono sottostringhe, questa è una norma di "prudenza generale da osservare anche quando non vi è rischio di problemi"
-    #  memorizziamo tali stringhe qui per "saltarle" quando le incontriamo
     
-    input_set1 = sorted(list(set(inputList)), key = len, reverse=True) # ignoriamo stringhe uguali - cominciamo dalle più lunghe
-    input_set2 = input_set1.copy() #
+    substrings_idx = set() # evitiamo di modificare il set su cui iteriamo rimuovendo da esso le stringhe
+    # che sono sottostringhe, questa è una norma di prudenza generale da osservare anche quando non vi è rischio di problemi
+    # memorizziamo qui le posizioni di tali stringhe nella lista per "saltarle" quando le incontriamo
 
-    for stringa1 in input_set1:
-        if stringa1 in substrings:
+    inputList = sorted(inputList, # ignoriamo stringhe uguali, ci appoggiamo a set() rimuove eventuali duplicati
+                        key = len, # key è la funzione in base al cui risultato verrà fatto l'ordinamento
+                        reverse=True) #  cominciamo dalle più lunghe
+
+    for i in range(len(inputList)):
+        if i in substrings_idx:
             continue # già identificata/catalogata come sottostringa, non la usiamo come chiave/risultato
-        stringa1_substr_set = set()
-        for stringa2 in input_set2:
-            if is_substring(stringa2, stringa1):
-                stringa1_substr_set.add(stringa2)
-                substrings.add(stringa2)
-        subDict[stringa1] = (stringa1_substr_set, len(stringa1_substr_set))
+                    # come precauzione "parnoid" per eventuali corruzioni dell'iterazione/sequenza non la rimuoviamo
+                    # da input_set1 (che è una copia di inputList)
+        stringai_substr_set = set() # insieme che conterrà le eventuali sottostringhe di stringa1
+        for j in range(i+1, len(inputList)):
+            if is_substring(inputList[j], inputList[i]):
+                stringai_substr_set.add(inputList[j])
+                substrings_idx.add(j)
+        
+        # associamo alla stringa la coppia <insieme sottostringhe> , cardinalità insieme
+        subDict[inputList[i]] = (stringai_substr_set, len(stringai_substr_set))
 
     return subDict
+
 
 
 # ----------------------------------- Esercizio 3: palDict ----------------------------------- #
@@ -164,22 +148,24 @@ def ex3(inputList):
 
     palDict = {True:  (palindrome,     len(palindrome)),
                False: (non_palindrome, len(non_palindrome))}
+
     return palDict
 
 
+
 if __name__ == "__main__":
-
-    input_list = ["enrico", "roma", "lazio", "sole", "mela", "pera", "casa", "maro","ziola", "enirco", "ocirne", "omar","olaiz"]
+    # prove veloci personali
+    inputList = ["enrico", "roma", "lazio", "sole", "mela", "pera", "casa", "maro","ziola", "enirco", "ocirne", "omar","olaiz"]
     print("\n\n"+"-"*10+" ex1: anagrammi"+"-"*10)
-    print(f"input list:\n{input_list}")
-    print("risultato:\n"+str(ex1(input_list)))
+    print(f"input list:\n{inputList}")
+    print("risultato:\n"+str(ex1(inputList)))
 
-    input_list = ["enrico", "en", "rico", "la","zio", "roma", "ro", "ma", "lazio"]
+    inputList = ["xxx", "enrico", "en", "rico", "la","zio", "roma", "ro", "ma", "lazio", "xxx"]
     print("\n\n"+"-"*10+" ex2: sottostringhe"+"-"*10)
-    print(f"input list:\n{input_list}")
-    print("risultato:\n"+str(ex2(input_list)))
+    print(f"input list:\n{inputList}")
+    print("risultato:\n"+str(ex2(inputList)))
 
-    input_list = ["aba", "ert", "bab", "carlo", "yamamay"]
+    inputList = ["aba", "ert", "bab", "carlo", "yamamay"]
     print("\n\n"+"-"*10+" ex3: palindrome"+"-"*10)
-    print(f"input list:\n{input_list}")
-    print(ex3(input_list))
+    print(f"input list:\n{inputList}")
+    print(ex3(inputList))

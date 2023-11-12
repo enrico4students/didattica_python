@@ -101,23 +101,15 @@ Es. 1:
 
 def is_anagram(string_1, string_2):
 
-        list_string_2 = [l for l in string_2]
-
+        list_string_2 = list(string_2) #[l for l in string_2]
         # sottraiamo ogni carattere della string_1 dalla lista dei caratteri della string_2
-
-        # se un carattere della string_1 non è presente nella string_2, allora non sono anagrammi
-
+        # se un carattere della string_1 non è presente nella string_2, allora non sono anagrammiì
         for l in string_1:
-
             try:
-
                 list_string_2.remove(l)
-
             except:
-
                 return False
         # per essere anagrammi, ogni carattere della string_2 deve appartenere anche alla string_1
-
         # dunque, dopo l'operazione precedente, dovremmo avere una lista vuota
 
         if list_string_2 == []:
