@@ -6,18 +6,21 @@ import testlib
 import glob
 import sys
 import filecmp
-import program
 
 
 # if not os.path.isfile('program.py'): # questo non funziona se la working directory cambia, come accade nel mio caso
-program_pathname = os.path.join(
-    "lez_andrea_C", "2023-11-07-smia", "program.py")
+program_pathname = os.path.join("program.py")
 # questo non funziona se la working directory cambia, come accade nel mio caso
-if not os.path.isfile(program_pathname):
+if not os.path.isfile("programxxxx.py"):
+    print(f"non trovato file nella directory:\n{os.getcwd()}")
+    print("in questa directory trovo i files")
+    for e in os.listdir():
+        print(e)
     print('WARNING: Save program_smia.py as program.py\n'
-          'ATTENZIONE: salvare program_smia.py con nome program.py')
+    'ATTENZIONE: salvare program_smia.py con nome program.py')
     sys.exit(0)
 
+import program
 
 ################################################################################
 # ------- THE SOURCE CODE FROM THIS POINT FORWARD IS FOR TESTING ONLY -------- #

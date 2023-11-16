@@ -148,7 +148,6 @@ def ex3(inputList):
 
     palDict = {True:  (palindrome,     len(palindrome)),
                False: (non_palindrome, len(non_palindrome))}
-
     return palDict
 
 
