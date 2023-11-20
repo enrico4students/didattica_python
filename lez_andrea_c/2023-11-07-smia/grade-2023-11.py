@@ -10,12 +10,12 @@ import program
 
 
 # if not os.path.isfile('program.py'): # questo non funziona se la working directory cambia, come accade nel mio caso
-program_pathname = os.path.join(
-    "lez_andrea_C", "2023-11-07-smia", "program.py")
+program_pathname = os.path.join("lez_andrea_C", "2023-11-07-smia", "program.py")
 # questo non funziona se la working directory cambia, come accade nel mio caso
 if not os.path.isfile(program_pathname):
     print('WARNING: Save program_smia.py as program.py\n'
           'ATTENZIONE: salvare program_smia.py con nome program.py')
+    print(f"file cercato: {program_pathname}")
     sys.exit(0)
 
 
