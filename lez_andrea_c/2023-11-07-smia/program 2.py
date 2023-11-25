@@ -97,15 +97,6 @@ def is_substring(s1, s2):
     return len(s1) < len(s2) and s1 in s2
 
 def ex2(input_list):
-
-    if type(input_list) != list:
-        input_list = list(input_list)
-
-    input_list = sorted(input_list, # ignoriamo stringhe uguali, ci appoggiamo a set() rimuove eventuali duplicati
-                    key = len, # key è la funzione in base al cui risultato verrà fatto l'ordinamento
-                    reverse=True) #  cominciamo dalle più lunghe
-
-
     sub_dict = {} # dizionario da ritornare
     substrings_idx = set() # evitiamo di modificare il set su cui iteriamo rimuovendo da esso le stringhe
     # che sono sottostringhe, questa è una norma di prudenza generale da osservare anche quando non vi è rischio di problemi
@@ -147,6 +138,7 @@ def ex3(inputList):
 
     palDict = {True:  (palindrome,     len(palindrome)),
                False: (non_palindrome, len(non_palindrome))}
+
     return palDict
 
 
