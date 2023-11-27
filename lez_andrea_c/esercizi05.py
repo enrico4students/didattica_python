@@ -33,8 +33,8 @@ def check_test(func: Callable, expected: Any, *args: List[Any]):
         print(f'{bcolors.FAIL}ERROR: {func_str}({args_str}) => {error_str}')
 
 
-verbose = False 
 verbose = True
+verbose = False 
 
 def log(msg: str):
     global verbose
@@ -194,8 +194,33 @@ def is_prime_recursive(n: int, d=2) -> bool:
 #
 # Scrivere una funziona che calcola il numero minimo di mosse necessarie per spostare
 # gli n dischi da uno paletto all’altro.
+
+def print_move(n: int, da: str, a: str, msg = ""):
+    log(f"muovo disco {n} da {da} a {a}")
+
+def sposta_disco(n: int, da: str, a: str, appoggio: str, nr_mosse: int):
+
+
+    if n <= 1:
+        nr_mosse +=1
+        print_move(n, da, a, "COMPLETATO   ")
+        return nr_mosse
+    
+    nr_mosse = sposta_disco(n-1, da, appoggio, a, nr_mosse)
+    print_move(n, da, a)
+    nr_mosse = sposta_disco(n-1, appoggio, a, da, nr_mosse)
+
+    nr_mosse +=1
+
+    return nr_mosse
+
+
 def hanoi_moves(n: int) -> int:
-    pass
+    # https://www.youtube.com/watch?v=rf6uf3jNjbo
+
+    nr_mosse = sposta_disco(n, "A", "C", "B", 0)
+
+    return nr_mosse
 
 
 # Nota: esercizio difficile
@@ -208,6 +233,8 @@ def hanoi_moves(n: int) -> int:
 # tale che la somma dei pesi sia minore o uguale a W e il valore totale (in euro)
 # sia il massimo possibile
 def knapsack(l: List[Tuple[int, int]], W: int) -> int:
+    # https://www.youtube.com/watch?v=gu2HEn15h-c
+    # 
     pass
 
 
@@ -233,18 +260,19 @@ def knapsack(l: List[Tuple[int, int]], W: int) -> int:
 #         check_test(power_recursive, base**exp, base, exp)
 # check_test(reverse_recursive, "oaic", "ciao")
 # check_test(reverse_recursive, "itopinonavevanonipoti", "itopinonavevanonipoti")
-check_test(is_prime_recursive, False, 1)
-check_test(is_prime_recursive, True, 2)
-check_test(is_prime_recursive, True, 3)
-check_test(is_prime_recursive, False, 4)
-check_test(is_prime_recursive, True, 5)
-check_test(is_prime_recursive, False, 6)
-check_test(is_prime_recursive, False, 35)
-check_test(is_prime_recursive, True, 89)
+# check_test(is_prime_recursive, False, 1)
+# check_test(is_prime_recursive, True, 2)
+# check_test(is_prime_recursive, True, 3)
+# check_test(is_prime_recursive, False, 4)
+# check_test(is_prime_recursive, True, 5)
+# check_test(is_prime_recursive, False, 6)
+# check_test(is_prime_recursive, False, 35)
+# check_test(is_prime_recursive, True, 89)
 
-exit(0)
 for n in range(1, 20):
     check_test(hanoi_moves, 2**n - 1, n)
+
+exit(0)
 check_test(knapsack, 220, [(10, 60), (20, 100), (30, 120)], 50)
 check_test(knapsack, 90, [(5, 10), (4, 40), (6, 30), (3, 50)], 10)
 # values = [
