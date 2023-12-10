@@ -43,6 +43,8 @@ def load_file(filename: str) -> str:
 # e' presente nel file. La ricerca ignora la distinzione tra maiuscole e minuscole,
 # e la punteggiatura.
 def search_word(filename: str, word: str) -> int:
+    
+    load_file(filename)
     pass
 
 # Dato il nome di un file di testo, si ritorna una "tabella" formata da una

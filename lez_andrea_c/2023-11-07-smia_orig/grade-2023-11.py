@@ -5,7 +5,7 @@ import glob
 import sys
 import filecmp
 
-if not os.path.isfile('program.py'):
+if not os.path.isfile('lez_andreac/2023-11-07-program.py'):
     print('WARNING: Save program_smia.py as program.py\n'
           'ATTENZIONE: salvare program_smia.py con nome program.py')
     sys.exit(0)

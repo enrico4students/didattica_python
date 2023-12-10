@@ -37,7 +37,9 @@ verbose = True
 verbose = False 
 
 def log(msg: str):
+
     global verbose
+
     if verbose:
         print(msg)
 
@@ -66,32 +68,41 @@ def tribonacci(n: int):
     return risultato
 
 
-def massimo_ric_calcolo(max_corrente, lista):
+
+# Scrivere una funzione ricorsiva che data una lista di interi, restituisca il massimo
+# Non usare cicli for/while
+
+def massimo_ric_calcolo_didattico(max_corrente, lista):
 
     log(f"entro: max corrente: {max_corrente} lista {lista}")
 
     if len(lista) == 1:
         max_corrente = max(max_corrente, lista[0])
     else:
-        lista_tranne_primo_elemento = lista[1::]
-        max_corrente = max(max_corrente, massimo_ric_calcolo(lista[0], lista_tranne_primo_elemento))
+        lista_tranne_primo_elemento = lista[1: : ]
+        max_corrente = max(max_corrente, 
+                           massimo_ric_calcolo(lista[0], lista_tranne_primo_elemento))
 
     log(f"esco: max corrente: {max_corrente} lista {lista}")
 
     return max_corrente
 
 
-# Scrivere una funzione ricorsiva che data una lista di interi, restituisca il massimo
-# Non usare cicli for/while
+def massimo_ric_calcolo(max_corrente, lista):
+
+    if len(lista) == 1:
+        return max(max_corrente, lista[0])
+
+    return max(max_corrente, massimo_ric_calcolo(lista[0], lista[1::]))
+
+
 def max_recursive(l: List[int]) -> int:
 
     if l is None or len(l) <= 0:
         log(f"lista è None o vuota: {l}, esco")
         exit(0)
 
-    massimo_corrente = l[0]
-
-    risultato = massimo_ric_calcolo(massimo_corrente, l[1:])
+    risultato = massimo_ric_calcolo(l[0], l[1: ])
 
     return risultato
 
@@ -104,7 +115,7 @@ def max_recursive(l: List[int]) -> int:
 
 
 # Scrivere una funzione ricorsive che calcola la somma dei numeri da 0 a n (incluso)
-def sum_recursive(n: int) -> int:
+def sum_recursive_didattica(n: int) -> int:
 
     if n < 0:
         print(f"numero = {n} numeri negativi non ammessi")
@@ -117,6 +128,19 @@ def sum_recursive(n: int) -> int:
 
     return risultato
 
+def sum_recursive(n: int) -> int:
+
+    if n < 0:
+        print(f"numero = {n} numeri negativi non ammessi")
+        exit(1)
+
+    if n == 0:
+        return 0
+
+    return n+sum_recursive(n-1)
+
+
+
 # numero = 5
 # print("-"*50+f"\nsum_recursive({numero}) = {sum_recursive(numero)}")
 # exit(0)
@@ -125,20 +149,36 @@ def sum_recursive(n: int) -> int:
 # Scrivere una funzione ricorsiva che calcoli la potenza di un numero,
 # utilizzando la seguente formula: power_recursive(base, exp) = base * power_recursive(b, exp-1)
 # Non potete usare pow(...) o l'operatore **
-def power_recursive(base: int, exp: int) -> int:
+
+verbose = True
+
+def power_recursive_didattica(base: int, exp: int) -> int:
     
     if exp < 0:
-        print(f"esponente = {n} esponenti negativi non ammessi")
+        log(f"esponente = {exp} esponenti negativi non ammessi")
         exit(1)
 
+    log(f"base: {base} esponente = {exp:2>}")
     if exp == 0:
         risultato = 1
-    elif exp == 1:
-        risultato = base
     else:
         risultato = base * power_recursive(base, exp-1)
 
     return risultato
+
+
+
+def power_recursive(base: int, exp: int) -> int:
+    
+    if exp < 0:
+        log(f"esponente = {exp} esponenti negativi non ammessi")
+        exit(1)
+
+    log(f"base: {base} esponente = {exp:2>}")
+    if exp == 0:
+        return 1
+
+    return base * power_recursive(base, exp-1)
 
 
 
@@ -149,10 +189,13 @@ def power_recursive(base: int, exp: int) -> int:
 def reverse_recursive(s: str) -> str:
     
     if len(s) == 0:
+        log(f'lunghezza zero, ritorno la stringa vuota ""')
         risultato = ""
     else:
-        risultato = reverse_recursive(s[1:])+s[:1]
+        log(f"reverse_recursive({s[1: ]}) + {s[:1]}")
+        risultato = reverse_recursive(s[1: ]) + s[:1]
 
+    log(f"reverse_recursive ritorno {risultato}")
     return risultato
 
 # stringa = "ciao"
@@ -244,37 +287,42 @@ def knapsack(l: List[Tuple[int, int]], W: int) -> int:
 
 
 # Test funzioni
-# check_test(tribonacci, 0, 0)
-# check_test(tribonacci, 0, 1)
-# check_test(tribonacci, 1, 2)
-# check_test(tribonacci, 66012, 21)
-# check_test(max_recursive, 100, [0, 1, 2, 100, 3, 4, 7])
-# check_test(max_recursive, 200, [200, 1, 2, 100, 3, 4, 7])
-# check_test(max_recursive, 337, [0, 1, 2, 100, 3, 4, 337])
 
-# for t in range(10):
-#     check_test(sum_recursive, sum(range(t+1)), t)
+if True:
+    verbose = False
+    check_test(tribonacci, 0, 0)
+    check_test(tribonacci, 0, 1)
+    check_test(tribonacci, 1, 2)
+    check_test(tribonacci, 66012, 21)
+    check_test(max_recursive, 100, [0, 1, 2, 100, 3, 4, 7])
+    check_test(max_recursive, 200, [200, 1, 2, 100, 3, 4, 7])
+    check_test(max_recursive, 337, [0, 1, 2, 100, 3, 4, 337])
 
-# for base in range(3):
-#     for exp in range(3):
-#         check_test(power_recursive, base**exp, base, exp)
-# check_test(reverse_recursive, "oaic", "ciao")
-# check_test(reverse_recursive, "itopinonavevanonipoti", "itopinonavevanonipoti")
-# check_test(is_prime_recursive, False, 1)
-# check_test(is_prime_recursive, True, 2)
-# check_test(is_prime_recursive, True, 3)
-# check_test(is_prime_recursive, False, 4)
-# check_test(is_prime_recursive, True, 5)
-# check_test(is_prime_recursive, False, 6)
-# check_test(is_prime_recursive, False, 35)
-# check_test(is_prime_recursive, True, 89)
+    for t in range(10):
+        check_test(sum_recursive, sum(range(t+1)), t)
 
-for n in range(1, 20):
-    check_test(hanoi_moves, 2**n - 1, n)
+    for base in range(3):
+        for exp in range(3):
+            check_test(power_recursive, base**exp, base, exp)
 
-exit(0)
-check_test(knapsack, 220, [(10, 60), (20, 100), (30, 120)], 50)
-check_test(knapsack, 90, [(5, 10), (4, 40), (6, 30), (3, 50)], 10)
+    verbose = True
+    check_test(reverse_recursive, "oaic", "ciao")
+    check_test(reverse_recursive, "itopinonavevanonipoti", "itopinonavevanonipoti")
+    verbose = False
+    check_test(is_prime_recursive, False, 1)
+    check_test(is_prime_recursive, True, 2)
+    check_test(is_prime_recursive, True, 3)
+    check_test(is_prime_recursive, False, 4)
+    check_test(is_prime_recursive, True, 5)
+    check_test(is_prime_recursive, False, 6)
+    check_test(is_prime_recursive, False, 35)
+    check_test(is_prime_recursive, True, 89)
+
+    for n in range(1, 20):
+        check_test(hanoi_moves, 2**n - 1, n)
+
+# check_test(knapsack, 220, [(10, 60), (20, 100), (30, 120)], 50)
+# check_test(knapsack, 90, [(5, 10), (4, 40), (6, 30), (3, 50)], 10)
 # values = [
 #        360, 83, 59, 130, 431, 67, 230, 52, 93, 125, 670, 892, 600, 38, 48, 147,
 #        78, 256, 63, 17, 120, 164, 432, 35, 92, 110, 22, 42, 50, 323, 514, 28,

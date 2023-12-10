@@ -57,7 +57,7 @@ Es. 1:
 
 
 def is_anagram_sorting(s1: str, s2: str):
-    """ controlla se due stringhe sono un'anagramma ordinando i loro caratteri e confrontando il risultato 
+    """ controlla se due stringhe sono un'anagramma 
     """
     return len(s1) == len(s2) and all(s1.count(char) == s2.count(char) for char in set(s1))
 

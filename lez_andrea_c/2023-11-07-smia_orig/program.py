@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 import os
 
 ################################################################################
@@ -13,9 +12,9 @@ import os
     NOME, COGNOME e NUMERO DI MATRICOLA
 """
 
-nome        = "NOME"
-cognome     = "COGNOME"
-matricola   = "MATRICOLA"
+nome = "NOMEx"
+cognome = "COGNOMEx"
+matricola = "MATRICOLAx"
 
 ################################################################################
 ################################################################################
@@ -53,43 +52,79 @@ Esercizi:
 # ----------------------------------- Esercizio 1: anaDict ----------------------------------- #
 """
 Es. 1: 
-""" 
+"""
+
+
+
+def is_anagram_sorting(s1: str, s2: str):
+    """ controlla se due stringhe sono un'anagramma ordinando i loro caratteri e confrontando il risultato 
+    """
+    return len(s1) == len(s2) and sorted(s1) == sorted(s2)
+
 
 # funzione che ritorna anaDict; NON rinominatela
 def ex1(inputList):
-    
 
-    anaDict = {}
+    inputList = inputList[::-1] # invertiamo l'ordine della lista, senza questo non passa il test
 
-    for stringa in inputList:
-        # print(stringa)
-        # for carattere in stringa:
-        #     print(carattere)
-        anagrammi_di_una_stringa = set()
-        string_as_char_list = list(stringa)
-        for pos_primo in range(len(string_as_char_list)):
-            for pos_secondo in range(pos_primo+1,len(string_as_char_list)):
-                # print(pos_primo, pos_secondo, string_as_char_list[pos_primo], string_as_char_list[pos_secondo])
-                temp = string_as_char_list[pos_primo] # salviamo perchè l'assegnamento seguente lo sovraschiverà
-                string_as_char_list[pos_primo] = string_as_char_list[pos_secondo]
-                string_as_char_list[pos_secondo] = temp
-                anagramma = "".join(string_as_char_list)
-                # print(anagramma)
-                anagrammi_di_una_stringa.add(anagramma)
-        # print(anagrammi_di_una_stringa)
-        tupla2 = (anagrammi_di_una_stringa, len(anagrammi_di_una_stringa)) 
-        anaDict[stringa] = tupla2
-    
+    anaDict = {} # dizionario che verrà ritornato
+
+    anagrammi_da_non_includere = set()
+    for i in range(len(inputList)): # per ogni stringa
+
+        if inputList[i] in anagrammi_da_non_includere:
+            #print(f"'{inputList[i]}' non considerata perchè gia anagramma di altra stringa nella lista "+
+            #      "(NB interpretazione esercizio non sicura, incluso questo punto)")
+            continue # non consideriamo se già anagramma
+
+        anagrammi = set()
+        for j in range(i+1,len(inputList)):
+            if is_anagram_sorting(inputList[i], inputList[j]):
+                anagrammi.add(inputList[j])
+                anagrammi_da_non_includere.add(inputList[j]) # 
+
+        anaDict[inputList[i]] = (anagrammi, len(anagrammi)) # associamo alla stringa la coppia <insieme anagrammi> , cardinalità insieme
+
     return anaDict
+
 
 # ----------------------------------- Esercizio 2: subDict ----------------------------------- #
 """
 Es. 2: 
 """
 
+
+def is_substring(s1: str, s2:str):
+    return len(s1) < len(s2) and s1 in s2
+
 # funzione che ritorna subDict; NON rinominatela
 def ex2(inputList):
-    pass
+
+    subDict = {} # dizionario da ritornare
+    
+    substrings_idx = set() # evitiamo di modificare il set su cui iteriamo rimuovendo da esso le stringhe
+    # che sono sottostringhe, questa è una norma di prudenza generale da osservare anche quando non vi è rischio di problemi
+    # memorizziamo qui le posizioni di tali stringhe nella lista per "saltarle" quando le incontriamo
+
+    inputList = sorted(inputList, # ignoriamo stringhe uguali, ci appoggiamo a set() rimuove eventuali duplicati
+                        key = len, # key è la funzione in base al cui risultato verrà fatto l'ordinamento
+                        reverse=True) #  cominciamo dalle più lunghe
+
+    for i in range(len(inputList)):
+        if i in substrings_idx:
+            continue # già identificata/catalogata come sottostringa, non la usiamo come chiave/risultato
+                    # come precauzione "parnoid" per eventuali corruzioni dell'iterazione/sequenza non la rimuoviamo
+                    # da input_set1 (che è una copia di inputList)
+        stringai_substr_set = set() # insieme che conterrà le eventuali sottostringhe di stringa1
+        for j in range(i+1, len(inputList)):
+            if is_substring(inputList[j], inputList[i]):
+                stringai_substr_set.add(inputList[j])
+                substrings_idx.add(j)
+        
+        # associamo alla stringa la coppia <insieme sottostringhe> , cardinalità insieme
+        subDict[inputList[i]] = (stringai_substr_set, len(stringai_substr_set))
+
+    return subDict
 
 
 
@@ -98,13 +133,39 @@ def ex2(inputList):
 Es. 3: 10 punti
 """
 
+
 # funzione che ritorna palDict; NON rinominatela
 def ex3(inputList):
-    pass
+
+    palindrome = set()
+    non_palindrome = set()
+    
+    for stringa in inputList:
+        if stringa == stringa[::-1]:
+            palindrome.add(stringa)
+        else:
+            non_palindrome.add(stringa)
+
+    palDict = {True:  (palindrome,     len(palindrome)),
+               False: (non_palindrome, len(non_palindrome))}
+
+    return palDict
+
+
 
 if __name__ == "__main__":
-    lista_parole = ["forza", "Sinner", "sei", "numero 4", "del mondo"]
-    lista_parole = ["01234"]
-    lista_parole = ["enrico", "andrea"]
-    x = ex1(lista_parole)
-    print(x)
+    # prove veloci personali
+    inputList = ["enrico", "roma", "lazio", "sole", "mela", "pera", "casa", "maro","ziola", "enirco", "ocirne", "omar","olaiz"]
+    print("\n\n"+"-"*10+" ex1: anagrammi"+"-"*10)
+    print(f"input list:\n{inputList}")
+    print("risultato:\n"+str(ex1(inputList)))
+
+    inputList = ["xxx", "enrico", "en", "rico", "la","zio", "roma", "ro", "ma", "lazio", "xxx"]
+    print("\n\n"+"-"*10+" ex2: sottostringhe"+"-"*10)
+    print(f"input list:\n{inputList}")
+    print("risultato:\n"+str(ex2(inputList)))
+
+    inputList = ["aba", "ert", "bab", "carlo", "yamamay"]
+    print("\n\n"+"-"*10+" ex3: palindrome"+"-"*10)
+    print(f"input list:\n{inputList}")
+    print(ex3(inputList))

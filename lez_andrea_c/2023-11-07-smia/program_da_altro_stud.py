@@ -21,11 +21,11 @@ import os
 
 """
 
-nome = "ANTONIO"
+nome = ""
 
-cognome = "BONITO"
+cognome = ""
 
-matricola = "152646254"
+matricola = ""
 
 ################################################################################
 
