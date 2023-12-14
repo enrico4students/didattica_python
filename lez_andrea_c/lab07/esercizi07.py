@@ -62,40 +62,36 @@ def transpose(m : List[List[int]]) -> List[List[int]]:
 #     0 1 1        4 2 2       4 3 3
 #     1 1 2        1 2 3       2 3 5
 # Restituire None se le due matrici non possono essere sommate.
+
+def dump_matrix_ids(m):
+    for i in range(len(m)):
+        print(id(m[i]))
+        for j in range(len(m[0])):
+            print("     "+ str(id(m[i][j])), end = ", ")
+
+
 def matrix_matrix_sum(A: List[List[int]], B: List[List[int]]) -> List[List[int]]:
 
-    assert(len(A) == len(B) and len(A[0]) == len(B[0]))
+    if len(A) != len(B) or len(A[0]) != len(B[0]):
+        return None
 
-    # liste più interne (righe) hanno nr-di-colonne elementi
-    
-    # ERRATO
-    empty_row = [None] * len(A[0])
-    empty_matrix = [ empty_row ] * len(A)
-
-    for i in range(len(empty_matrix)):
-        print(id(empty_matrix[i]))
-        for j in range(len(empty_matrix[0])):
-            print("     "+ str(id(empty_matrix[i][j])), end = ", ")
-        print()
-
+    # approccio semplice
+    # result_matrix = A.copy() # non necessario inizializzarla
+                               # verrà comunque totalmente sovrascritta
+    # approccio complesso a fini di pratica didattica
+    result_matrix = [ [0 for c in range(len(A[0])) ] for r in range(len(A))]
 
     for i in range(len(A)):
         for j in range(len(A[0])):
-            empty_matrix[i][j] = i*10+j
+            result_matrix[i][j] = A[i][j]+B[i][j]
 
-    for r in empty_matrix:
-        for c in r:
-            print(c, end = ", ")
-        print()
+    return result_matrix
 
+if False:
+    x = matrix_matrix_sum([ [0,1], [2,3], [4,5]], 
+                        [ [10, 11], [12, 13], [14, 15] ])
+    print(x)
 
-
-    return empty_matrix
-
-
-x = matrix_matrix_sum([ [0,1], [2,3], [4,5]], [ [10, 11], [12, 13], [14, 15] ])
-print(x)
-print(x)
 
 
 # Scrivere una funzione che date due matrici, restituisca una matrice
@@ -107,7 +103,25 @@ print(x)
 #     1 1 2                    11 9 6
 # Restituire None se le due matrici non possono essere moltiplicate.
 def matrix_matrix_mul(A: List[List[int]], B: List[List[int]]) -> List[List[int]]:
-    pass
+    
+    nr_cols_A = len(A[0])
+    nr_rows_B = len(B)
+    if nr_cols_A != nr_rows_B:
+        print(f"moltiplicazione non possible nr cols A {nr_cols_A} diverso da nr righe B {nr_rows_B}")
+        return None
+
+    result_matrix = [[ 0 for _ in B[0] ] for _ in A]
+
+
+    for idx_row_A in range(len(A)):
+        for idx_col_B in range(len(B[0])):
+            # print(f"moltiplico riga {idx_row_A} di A con col {idx_col_B} di B")
+            ris_molt = 0
+            for idx_molt in range(nr_cols_A):
+                ris_molt += A[idx_row_A][idx_molt] * B [idx_molt][idx_col_B]
+            result_matrix[idx_row_A][idx_col_B] = ris_molt
+
+    return result_matrix
 
 # Definire una funzione che dato il nome di un file (img_in) contenente un'immagine,
 # calcola l'immagine rotata di 90 gradi a destra e invertita rispetto l'asse verticale.
@@ -117,10 +131,18 @@ def matrix_matrix_mul(A: List[List[int]], B: List[List[int]]) -> List[List[int]]
 # (non vengono effettuati test automatici)
 def img_rotate_right_and_flip_v(img_in: str, img_out : str):
     # Leggere!!!!
-    #im = images.load(img_in)  # legge l'immagine del file img_in e la pone nella matrice im
-    # im_out = <scrivete il vostro codice>
-    #images.save(im_out, img_out)  # salva l'immagine im_out nel file img_out
-    pass
+    im = images.load(img_in)  # legge l'immagine del file img_in e la pone nella matrice im
+
+    # mio codice
+    print(f"type(im): {type(im)} {len(im)}x{len(im[0])}" )
+
+    im = im[::-1]
+    im = transpose(im)
+    im = im[::-1]
+
+    im_out = im
+    
+    images.save(im_out, img_out)  # salva l'immagine im_out nel file img_out
 
 
 # Definire una funzione che dato il nome di un file (img_in) contenente un'immagine,
@@ -130,7 +152,23 @@ def img_rotate_right_and_flip_v(img_in: str, img_out : str):
 # Controllare il file risultante per verificare la correttezza della funzione 
 # (non vengono effettuati test automatici)
 def img_invert_channels(img_in: str, img_out : str):
-    pass
+
+    import copy
+
+    im = images.load(img_in)  # legge l'immagine del file img_in e la pone nella matrice im
+
+    # mio codice
+    im_out = copy.deepcopy(im)
+
+    for i in range(len(im)):
+        for j in range(len(im[0])):
+            r, g, b = im[i][j]
+            im_out[i][j] = b, g, r
+            # if r != b:
+            #     print(f"{im[i][j]}\n{im_out[i][j]}\n")            
+            #     print("")
+
+    images.save(im_out, img_out)  # salva l'immagine im_out nel file img_out
 
 # Definire una funzione che dato il nome di un file (img_in) contenente un'immagine,
 # calcola un'immagine in cui ognuno dei 3 canali è quantizzato su 128 possibili valori 
@@ -141,7 +179,16 @@ def img_invert_channels(img_in: str, img_out : str):
 # Controllare il file risultante per verificare la correttezza della funzione 
 # (non vengono effettuati test automatici)
 def img_quantize(img_in: str, img_out : str):
-    pass
+
+    im = images.load(img_in)  # legge l'immagine del file img_in e la pone nella matrice im
+
+    # mio codice
+    for i in range(len(im)):
+        for j in range(len(im[0])):
+            r, g, b = im[i][j]
+            im[i][j] = r//2, g//2, b//2
+
+    images.save(im, img_out)  # salva l'immagine im_out nel file img_out
 
 # Definire una funzione che dato il nome di un file (img_in) contenente un'immagine,
 # calcola un'immagine in cui la metà destra dell'immagine è scambiata con la metà sinistra.
@@ -153,20 +200,33 @@ def img_quantize(img_in: str, img_out : str):
 # Controllare il file risultante per verificare la correttezza della funzione 
 # (non vengono effettuati test automatici)
 def img_invert_half(img_in: str, img_out : str):
-    pass
+
+    import copy
+
+    im = images.load(img_in)  # legge l'immagine del file img_in e la pone nella matrice im
+
+    im_out = copy.deepcopy(im)
+
+    for row_idx in range(len(im)):
+        for col_idx in range(len(im[0])):
+            im_out[row_idx][col_idx] = im[row_idx][-col_idx]
+
+    images.save(im_out, img_out)  # salva l'immagine im_out nel file img_out
+
 
 # Test funzioni
-check_test(transpose, [[5, 3], [2, 1]], [[5, 2], [3, 1]])
-check_test(transpose, [[5, 3], [2, 1], [9, 0]], [[5, 2, 9], [3, 1, 0]])
-check_test(transpose, [[5, 3]], [[5], [3]])
-check_test(transpose, [[5], [3]], [[5, 3]])
-check_test(matrix_matrix_sum, [[2, 2, 2], [4, 4, 2], [4, 3, 3], [2, 3, 5]], [[1, 0, 1], [2, 1, 1], [0, 1, 1], [1, 1, 2]], [[1, 2, 1], [2, 3, 1], [4, 2, 2], [1, 2, 3]])
-check_test(matrix_matrix_sum, None, [[1, 0, 1], [2, 1, 1], [0, 1, 1], [1, 1, 2]], [[1, 2], [2, 3], [4, 2], [1, 2]])
-check_test(matrix_matrix_sum, None, [[1, 0, 1], [2, 1, 1], [0, 1, 1], [1, 1, 2]], [[1, 2, 1], [2, 3, 1], [4, 2, 2]])
-check_test(matrix_matrix_mul, [[5, 4, 3], [8, 9, 5], [6, 5, 3], [11, 9, 6]], [[1, 0, 1], [2, 1, 1], [0, 1, 1], [1, 1, 2]], [[1, 2, 1], [2, 3, 1], [4, 2, 2]])
-check_test(matrix_matrix_mul, [[5], [8], [6], [11]], [[1, 0, 1], [2, 1, 1], [0, 1, 1], [1, 1, 2]], [[1], [2], [4]])
-check_test(matrix_matrix_mul, None, [[1, 0, 1], [2, 1, 1], [0, 1, 1], [1, 1, 2]], [[1, 2, 1], [2, 3, 1]])
-img_rotate_right_and_flip_v("img.png", "img_rotate_flip.png")
-img_invert_channels("img.png", "img_invert_channels.png")
-img_quantize("img.png", "img_quantized.png")
-img_invert_half("img.png", "img_inverted_half.png")
+if True:
+    check_test(transpose, [[5, 3], [2, 1]], [[5, 2], [3, 1]])
+    check_test(transpose, [[5, 3], [2, 1], [9, 0]], [[5, 2, 9], [3, 1, 0]])
+    check_test(transpose, [[5, 3]], [[5], [3]])
+    check_test(transpose, [[5], [3]], [[5, 3]])
+    check_test(matrix_matrix_sum, [[2, 2, 2], [4, 4, 2], [4, 3, 3], [2, 3, 5]], [[1, 0, 1], [2, 1, 1], [0, 1, 1], [1, 1, 2]], [[1, 2, 1], [2, 3, 1], [4, 2, 2], [1, 2, 3]])
+    check_test(matrix_matrix_sum, None, [[1, 0, 1], [2, 1, 1], [0, 1, 1], [1, 1, 2]], [[1, 2], [2, 3], [4, 2], [1, 2]])
+    check_test(matrix_matrix_sum, None, [[1, 0, 1], [2, 1, 1], [0, 1, 1], [1, 1, 2]], [[1, 2, 1], [2, 3, 1], [4, 2, 2]])
+    check_test(matrix_matrix_mul, [[5, 4, 3], [8, 9, 5], [6, 5, 3], [11, 9, 6]], [[1, 0, 1], [2, 1, 1], [0, 1, 1], [1, 1, 2]], [[1, 2, 1], [2, 3, 1], [4, 2, 2]])
+    check_test(matrix_matrix_mul, [[5], [8], [6], [11]], [[1, 0, 1], [2, 1, 1], [0, 1, 1], [1, 1, 2]], [[1], [2], [4]])
+    check_test(matrix_matrix_mul, None, [[1, 0, 1], [2, 1, 1], [0, 1, 1], [1, 1, 2]], [[1, 2, 1], [2, 3, 1]])
+    img_rotate_right_and_flip_v("./lez_andrea_c/lab07/img.png", "./lez_andrea_c/lab07/img_rotate_flip.png")
+    img_invert_channels("./lez_andrea_c/lab07/img.png", "./lez_andrea_c/lab07/img_invert_channels.png")
+    img_quantize("./lez_andrea_c/lab07/img.png", "./lez_andrea_c/lab07/img_quantized.png")
+    img_invert_half("./lez_andrea_c/lab07/img.png", "./lez_andrea_c/lab07/img_inverted_half.png")
