@@ -1,9 +1,12 @@
-x = 10
 
-for y in [2, 0]:
-    try:
-        z = x/y
-    except Exception as myExc:
-        print(f"ECCEZIONE {type(myExc)}: il divisore è {y}, non possibile")
-    finally:
-        print("Tutto fatto")
+
+l = list(range(10))
+# print(f"tipo {type(l)} valore: {l}")
+
+l_c = [ x**2 for x in l]
+# print(f"tipo {type(l_c)} valore: {l_c}")
+
+_ = 9
+print(3+_) 
+
+
