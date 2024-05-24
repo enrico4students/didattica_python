@@ -58,6 +58,9 @@ def crea_codeword(messaggio):
 
     for pos_ctrl in pos_bits_ctrl_l:
 
+        if pos_ctrl > 16:
+            break  # scorretto, temporaneo per evitare calcoli
+
         print(f"calcolo valore parita bit controllo(rettificato): {pos_ctrl+1}")        
         parita_trovata = 0 
         for i in range(len(codeword)):
