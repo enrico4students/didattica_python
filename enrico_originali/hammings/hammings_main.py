@@ -8,21 +8,22 @@ import hammings_utils as hutil
 LUNG_MESSAGGI = 8
 
 
-pos_bits_mesg = [] # indici dei bits del messaggio
-pos_bits_ctrl = [] # indici dei bits di controllo
+pos_bits_mesg_l = [] # indici dei bits del messaggio
+pos_bits_ctrl_l = [] # indici dei bits di controllo
 
 
 def inizializzazioni():
 
-    for i in range(1,256):
+    for i in range(1, 256):
         log2_i = math.log2(i)
         if log2_i == int(log2_i):
-            pos_bits_ctrl.append(i)
+            pos_bits_ctrl_l.append(i-1)
         else:
-            pos_bits_mesg.append(i)
+            pos_bits_mesg_l.append(i-1)
 
-    print(f"indici bits controllo {pos_bits_ctrl}")
-    print(f"indici bits messaggio {pos_bits_mesg}")
+    print(f"indici bits controllo {pos_bits_ctrl_l}")
+    print(f"indici bits messaggio {pos_bits_mesg_l}")
+    print()
 
 
 def genera_messaggio(lung):
@@ -36,9 +37,42 @@ def genera_messaggio(lung):
 
 
 def crea_codeword(messaggio):
-    # 
     
-    return messaggio + [9,9,9]
+    codeword = [9]*64 # andrebbe calcolata matematicamente
+    
+    # --- copia i bits del messaggio nella codeword
+    pos_bit_msg = 0
+    for pos_bit_msg_in_cword in pos_bits_mesg_l:
+
+        if pos_bit_msg_in_cword >= len(codeword):
+            print(f"errore interno, eccceduta lunghezza codeword")
+            exit(1)
+            break
+        codeword[pos_bit_msg_in_cword] = messaggio[pos_bit_msg]
+        pos_bit_msg += 1
+        if pos_bit_msg >= len(messaggio): # raggiunta fine messaggio
+            break
+
+
+    # --- avvalora i bits di controllo, usa parità pari
+
+    for pos_ctrl in pos_bits_ctrl_l:
+
+        print(f"calcolo valore parita bit controllo(rettificato): {pos_ctrl+1}")        
+        parita_trovata = 0 
+        for i in range(len(codeword)):
+            bin_digits_posizione = hutil.bindigits_list_from_num(i)
+            if bin_digits_posizione[pos_ctrl] != 1:
+                continue # ignoro, non è nel dominio di parità di questo bit di controllo 
+
+            print(f"--- esamino bit codeword (rettificato): {i+1}: {codeword[i+1]}")        
+            parita_trovata += bin_digits_posizione[pos_ctrl]
+
+        print(f"paritaà trovata: {parita_trovata}")
+        valore_bit_controllo = 0 if (parita_trovata%2 == 0) else 1
+        codeword[pos_ctrl] = valore_bit_controllo
+
+    return codeword
 
 
 def trasmetti_codeword(codeword):
